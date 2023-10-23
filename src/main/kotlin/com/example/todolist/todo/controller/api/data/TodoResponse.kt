@@ -11,7 +11,7 @@ class TodoResponse(
 
     val title: String
 
-    val memo: String
+    val memo: String?
 
     val startedAt: LocalDateTime
 
