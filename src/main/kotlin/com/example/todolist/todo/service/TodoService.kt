@@ -15,6 +15,7 @@ class TodoService(
     @Transactional(readOnly = true)
     fun getTodos(userId: Long): List<Todo> {
         return todoRepository.findAllByUserId(userId = userId)
+            .filter { it.isNotDeleted() }
     }
 
     @Transactional(readOnly = true)

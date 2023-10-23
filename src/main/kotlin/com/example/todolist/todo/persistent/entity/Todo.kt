@@ -51,6 +51,10 @@ class Todo(
         deletedAt = now()
     }
 
+    fun isDeleted() = deletedAt != null
+
+    fun isNotDeleted() = deletedAt == null
+
     companion object {
         fun of(userId: Long, createTodoRequest: CreateTodoRequest): Todo {
             return Todo(
