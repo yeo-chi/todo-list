@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/v1/todo")
+@RequestMapping("api/v1/users/me/todo")
 class TodoApiController {
     @GetMapping
     @ResponseStatus(OK)
