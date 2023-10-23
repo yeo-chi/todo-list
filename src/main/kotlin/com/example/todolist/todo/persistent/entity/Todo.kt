@@ -1,6 +1,7 @@
 package com.example.todolist.todo.persistent.entity
 
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType.IDENTITY
@@ -18,6 +19,7 @@ class Todo(
     @GeneratedValue(strategy = IDENTITY)
     val id: Long = 0,
 
+    @Column(name = "user_id")
     val userId: Long,
 
     val title: String,

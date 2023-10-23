@@ -2,6 +2,7 @@ package com.example.todolist.user.persistent.entity
 
 import com.example.todolist.todo.persistent.entity.Todo
 import jakarta.persistence.*
+import jakarta.persistence.FetchType.LAZY
 import jakarta.persistence.GenerationType.IDENTITY
 import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
@@ -23,7 +24,7 @@ class User(
 
     val nickName: String,
 
-    @OneToMany
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "user_id")
     val todos: List<Todo>,
 
