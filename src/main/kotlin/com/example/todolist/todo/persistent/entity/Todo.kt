@@ -1,12 +1,11 @@
 package com.example.todolist.todo.persistent.entity
 
+import com.example.todolist.todo.controller.api.data.CreateTodoRequest
+import com.example.todolist.todo.controller.api.data.UpdateTodoRequest
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
+import com.example.todolist.todo.persistent.entity.data.TodoStatus.CREATED
+import jakarta.persistence.*
 import jakarta.persistence.GenerationType.IDENTITY
-import jakarta.persistence.Id
-import jakarta.persistence.Table
 import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
@@ -22,13 +21,13 @@ class Todo(
     @Column(name = "user_id")
     val userId: Long,
 
-    val title: String,
+    var title: String,
 
-    val memo: String,
+    var memo: String? = null,
 
-    val startedAt: LocalDateTime,
+    var startedAt: LocalDateTime,
 
-    var status: TodoStatus,
+    var status: TodoStatus = CREATED,
 
     val createdAt: LocalDateTime = now(),
 
@@ -36,12 +35,30 @@ class Todo(
 
     var deletedAt: LocalDateTime? = null,
 ) {
-    fun updateStatus(status: TodoStatus) {
-        this.status = status
-        this.updatedAt = now()
+    fun update(updateTodoRequest: UpdateTodoRequest) {
+        title = updateTodoRequest.title
+        memo = updateTodoRequest.memo
+        startedAt = updateTodoRequest.startedAt
+        updatedAt = now()
+    }
+
+    fun updateStatus(todoStatus: TodoStatus) {
+        status = todoStatus
+        updatedAt = now()
     }
 
     fun delete() {
-        this.deletedAt = now()
+        deletedAt = now()
+    }
+
+    companion object {
+        fun of(userId: Long, createTodoRequest: CreateTodoRequest): Todo {
+            return Todo(
+                userId = userId,
+                title = createTodoRequest.title,
+                memo = createTodoRequest.memo,
+                startedAt = createTodoRequest.startedAt,
+            )
+        }
     }
 }
