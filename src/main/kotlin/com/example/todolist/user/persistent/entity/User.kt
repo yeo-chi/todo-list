@@ -5,6 +5,7 @@ import com.example.todolist.user.controller.api.data.SignUpUserRequest
 import jakarta.persistence.*
 import jakarta.persistence.FetchType.LAZY
 import jakarta.persistence.GenerationType.IDENTITY
+import org.apache.commons.lang3.StringUtils
 import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
@@ -47,12 +48,16 @@ class User(
 
     companion object {
         fun of(signUpUserRequest: SignUpUserRequest): User {
-            return User(
-                userId = signUpUserRequest.userId,
-                password = signUpUserRequest.password,
-                name = signUpUserRequest.name,
-                nickName = signUpUserRequest.nickName,
-            )
+            return with(signUpUserRequest) {
+                require(StringUtils.equals(password, rePassword)) { "비밀번호가 일치하지 않습니다." }
+
+                User(
+                    userId = userId,
+                    password = password,
+                    name = name,
+                    nickName = nickName,
+                )
+            }
         }
     }
 }
