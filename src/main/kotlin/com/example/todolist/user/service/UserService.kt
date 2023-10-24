@@ -17,7 +17,7 @@ class UserService(
 ) {
     @Transactional(readOnly = true)
     fun getUser(id: Long): User {
-        return userRepository.findByIdOrNull(id = id) ?: throw NoSuchElementException()
+        return userRepository.findByIdOrNull(id = id) ?: throw NoSuchElementException("회원을 찾을 수 없습니다.")
     }
 
     @Transactional
@@ -33,7 +33,8 @@ class UserService(
     @Transactional(readOnly = true)
     fun signIn(signInUserRequest: SignInUserRequest): User {
         return userRepository.findByUserId(userId = signInUserRequest.userId)
-            .also { it.validPassword(password = signInUserRequest.password, passwordEncoder = passwordEncoder) }
+            ?.also { it.validPassword(password = signInUserRequest.password, passwordEncoder = passwordEncoder) }
+            ?: throw NoSuchElementException("아이디를 찾을 수 없습니다.")
     }
 
     @Transactional

@@ -22,7 +22,7 @@ class TodoService(
     fun getTodo(id: Long, userId: Long): Todo {
         return todoRepository.findByIdOrNull(id = id)
             ?.also { it.userCheck(userId = userId) }
-            ?: throw NoSuchElementException()
+            ?: throw NoSuchElementException("할 일을 찾을 수 없습니다.")
     }
 
     @Transactional
