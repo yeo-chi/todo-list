@@ -21,8 +21,8 @@ class SecurityConfiguration(
         }
         .authorizeHttpRequests {
             it.requestMatchers(
-                "/**",
-                "/api/v1/users/**",
+                "/api/v1/users",
+                "/api/v1/users/signIn",
                 "/swagger-ui/**",
                 "/v3/**",
             ).permitAll()
