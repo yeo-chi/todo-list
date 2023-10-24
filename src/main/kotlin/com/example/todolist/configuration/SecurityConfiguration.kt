@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 @Configuration
 class SecurityConfiguration(
@@ -30,6 +31,7 @@ class SecurityConfiguration(
                 .authenticated()
         }
         .sessionManagement { it.sessionCreationPolicy(STATELESS) }
+        .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter::class.java)
         .build()
 
     @Bean
