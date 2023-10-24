@@ -33,7 +33,7 @@ class UserService(
     @Transactional(readOnly = true)
     fun signIn(signInUserRequest: SignInUserRequest): User {
         return userRepository.findByUserId(userId = signInUserRequest.userId)
-            .also { it.validPassword(signInUserRequest.password) }
+            .also { it.validPassword(password = signInUserRequest.password, passwordEncoder = passwordEncoder) }
     }
 
     @Transactional

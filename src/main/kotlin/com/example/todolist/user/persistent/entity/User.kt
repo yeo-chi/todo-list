@@ -37,8 +37,8 @@ class User(
 
     var deletedAt: LocalDateTime? = null,
 ) {
-    fun validPassword(password: String): Boolean {
-        TODO("암호화 방식까지 정의하여 암호화된 비밀번호와 일치하는지 확인하기")
+    fun validPassword(password: String, passwordEncoder: PasswordEncoder) {
+        check(passwordEncoder.matches(password, this.password)) { "비밀번호가 일치하지 않습니다" }
     }
 
     fun leave() {
