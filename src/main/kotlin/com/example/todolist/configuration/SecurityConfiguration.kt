@@ -22,6 +22,7 @@ class SecurityConfiguration(
         }
         .authorizeHttpRequests {
             it.requestMatchers(
+                "/error",
                 "/api/v1/users",
                 "/api/v1/users/signIn",
                 "/swagger-ui/**",
