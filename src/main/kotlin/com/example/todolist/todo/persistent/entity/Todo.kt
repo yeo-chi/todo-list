@@ -55,6 +55,10 @@ class Todo(
 
     fun isNotDeleted() = deletedAt == null
 
+    fun userCheck(userId: Long) {
+        require(this.id == userId) { "등록된 아이디와 다른 사용자가 접근했습니다." }
+    }
+
     companion object {
         fun of(userId: Long, createTodoRequest: CreateTodoRequest): Todo {
             return Todo(

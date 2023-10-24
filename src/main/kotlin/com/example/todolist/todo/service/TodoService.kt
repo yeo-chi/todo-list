@@ -19,8 +19,10 @@ class TodoService(
     }
 
     @Transactional(readOnly = true)
-    fun getTodo(id: Long): Todo {
-        return todoRepository.findByIdOrNull(id = id) ?: throw NoSuchElementException()
+    fun getTodo(id: Long, userId: Long): Todo {
+        return todoRepository.findByIdOrNull(id = id)
+            ?.also { it.userCheck(userId = userId) }
+            ?: throw NoSuchElementException()
     }
 
     @Transactional
@@ -29,23 +31,20 @@ class TodoService(
     }
 
     @Transactional
-    fun updateTodo(id: Long, updateTodoRequest: UpdateTodoRequest) {
-        getTodo(id = id).apply {
-            update(updateTodoRequest)
-        }
+    fun updateTodo(id: Long, userId: Long, updateTodoRequest: UpdateTodoRequest) {
+        getTodo(id = id, userId = userId)
+            .apply { update(updateTodoRequest) }
     }
 
     @Transactional
-    fun updateStatusTodo(id: Long, todoStatus: TodoStatus) {
-        getTodo(id = id).apply {
-            updateStatus(todoStatus = todoStatus)
-        }
+    fun updateStatusTodo(id: Long, userId: Long, todoStatus: TodoStatus) {
+        getTodo(id = id, userId = userId)
+            .apply { updateStatus(todoStatus = todoStatus) }
     }
 
     @Transactional
-    fun deleteTodo(id: Long) {
-        getTodo(id = id).apply {
-            delete()
-        }
+    fun deleteTodo(id: Long, userId: Long) {
+        getTodo(id = id, userId = userId)
+            .apply { delete() }
     }
 }

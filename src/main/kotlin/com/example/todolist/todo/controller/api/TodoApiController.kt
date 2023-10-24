@@ -1,5 +1,6 @@
 package com.example.todolist.todo.controller.api
 
+import com.example.todolist.expansion.getIdToLong
 import com.example.todolist.todo.controller.api.data.CreateTodoRequest
 import com.example.todolist.todo.controller.api.data.TodoResponse
 import com.example.todolist.todo.controller.api.data.UpdateTodoRequest
@@ -8,6 +9,7 @@ import com.example.todolist.todo.persistent.entity.data.TodoStatus
 import com.example.todolist.todo.service.TodoService
 import org.springframework.http.HttpStatus.*
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @RequestMapping("api/v1/users/me/todos")
@@ -16,22 +18,31 @@ class TodoApiController(
 ) {
     @GetMapping
     @ResponseStatus(OK)
-    private fun getTodoList(): List<TodoResponse> {
-        return todoService.getTodos(userId = 1).map(::TodoResponse)
+    private fun getTodoList(principal: Principal): List<TodoResponse> {
+        return todoService.getTodos(userId = principal.getIdToLong()).map(::TodoResponse)
     }
 
     @GetMapping("{id}")
     @ResponseStatus(OK)
-    private fun getTodo(@PathVariable("id") id: Long): TodoResponse {
-        return todoService.getTodo(id = id).let(::TodoResponse)
+    private fun getTodo(
+        @PathVariable("id") id: Long,
+        principal: Principal,
+    ): TodoResponse {
+        return todoService.getTodo(
+            id = id,
+            userId = principal.getIdToLong(),
+        ).let(::TodoResponse)
     }
 
     @PostMapping
     @ResponseStatus(CREATED)
-    private fun createTodo(@RequestBody createTodoRequest: CreateTodoRequest): TodoResponse {
+    private fun createTodo(
+        principal: Principal,
+        @RequestBody createTodoRequest: CreateTodoRequest
+    ): TodoResponse {
         return todoService.createTodo(
             todo = Todo.of(
-                userId = 1,
+                userId = principal.getIdToLong(),
                 createTodoRequest = createTodoRequest,
             ),
         ).let(::TodoResponse)
@@ -39,19 +50,41 @@ class TodoApiController(
 
     @PutMapping("{id}")
     @ResponseStatus(OK)
-    private fun updateTodo(@PathVariable("id") id: Long, @RequestBody updateTodoRequest: UpdateTodoRequest) {
-        return todoService.updateTodo(id = id, updateTodoRequest = updateTodoRequest)
+    private fun updateTodo(
+        @PathVariable("id") id: Long,
+        principal: Principal,
+        @RequestBody updateTodoRequest: UpdateTodoRequest,
+    ) {
+        return todoService.updateTodo(
+            id = id,
+            userId = principal.getIdToLong(),
+            updateTodoRequest = updateTodoRequest,
+        )
     }
 
     @PatchMapping("{id}")
     @ResponseStatus(OK)
-    private fun updateStatusTodo(@PathVariable("id") id: Long, todoStatus: TodoStatus) {
-        return todoService.updateStatusTodo(id = id, todoStatus = todoStatus)
+    private fun updateStatusTodo(
+        @PathVariable("id") id: Long,
+        principal: Principal,
+        todoStatus: TodoStatus,
+    ) {
+        return todoService.updateStatusTodo(
+            id = id,
+            userId = principal.getIdToLong(),
+            todoStatus = todoStatus,
+        )
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(NO_CONTENT)
-    private fun deleteTodo(@PathVariable("id") id: Long) {
-        return todoService.deleteTodo(id = id)
+    private fun deleteTodo(
+        @PathVariable("id") id: Long,
+        principal: Principal,
+    ) {
+        return todoService.deleteTodo(
+            id = id,
+            userId = principal.getIdToLong(),
+        )
     }
 }
