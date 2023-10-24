@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/v1/users")
-class UserController(
+class UserApiController(
     private val userService: UserService,
 ) {
     @GetMapping("me")
