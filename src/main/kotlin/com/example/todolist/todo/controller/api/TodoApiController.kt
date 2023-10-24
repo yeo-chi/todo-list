@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/v1/users/me/todo")
+@RequestMapping("api/v1/users/me/todos")
 class TodoApiController(
     private val todoService: TodoService,
 ) {
