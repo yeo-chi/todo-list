@@ -1,15 +1,19 @@
 package com.example.todolist.user.service
 
 import com.example.todolist.user.controller.api.data.SignInUserRequest
+import com.example.todolist.user.controller.api.data.SignUpUserRequest
 import com.example.todolist.user.persistent.entity.User
 import com.example.todolist.user.persistent.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
+
+    private val passwordEncoder: PasswordEncoder,
 ) {
     @Transactional(readOnly = true)
     fun getUser(id: Long): User {
@@ -17,8 +21,13 @@ class UserService(
     }
 
     @Transactional
-    fun signUp(user: User): User {
-        return userRepository.save(user)
+    fun signUp(signUpUserRequest: SignUpUserRequest): User {
+        return userRepository.save(
+            User.of(
+                signUpUserRequest = signUpUserRequest,
+                passwordEncoder = passwordEncoder,
+            ),
+        )
     }
 
     @Transactional(readOnly = true)

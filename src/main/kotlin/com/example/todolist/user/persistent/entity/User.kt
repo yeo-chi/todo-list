@@ -7,6 +7,7 @@ import jakarta.persistence.FetchType.LAZY
 import jakarta.persistence.GenerationType.IDENTITY
 import org.apache.commons.lang3.StringUtils
 import org.hibernate.annotations.DynamicUpdate
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 
@@ -47,13 +48,13 @@ class User(
     fun isLeave() = deletedAt != null
 
     companion object {
-        fun of(signUpUserRequest: SignUpUserRequest): User {
+        fun of(signUpUserRequest: SignUpUserRequest, passwordEncoder: PasswordEncoder): User {
             return with(signUpUserRequest) {
                 require(StringUtils.equals(password, rePassword)) { "비밀번호가 일치하지 않습니다." }
 
                 User(
                     userId = userId,
-                    password = password,
+                    password = passwordEncoder.encode(password),
                     name = name,
                     nickName = nickName,
                 )

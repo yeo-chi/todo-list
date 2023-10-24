@@ -24,7 +24,7 @@ class UserApiController(
     @ResponseStatus(CREATED)
     fun signUp(@RequestBody signUpUserRequest: SignUpUserRequest): SignUpUserResponse {
         return SignUpUserResponse(
-            user = userService.signUp(user = User.of(signUpUserRequest = signUpUserRequest)),
+            user = userService.signUp(signUpUserRequest = signUpUserRequest),
             tokenProvider = tokenProvider,
         )
     }
