@@ -1,9 +1,7 @@
 package com.example.todolist.todo.controller.api
 
 import com.example.todolist.expansion.getIdToLong
-import com.example.todolist.todo.controller.api.data.CreateTodoRequest
-import com.example.todolist.todo.controller.api.data.TodoResponse
-import com.example.todolist.todo.controller.api.data.UpdateTodoRequest
+import com.example.todolist.todo.controller.api.data.*
 import com.example.todolist.todo.persistent.entity.Todo
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
 import com.example.todolist.todo.service.TodoService
@@ -18,8 +16,31 @@ class TodoApiController(
 ) {
     @GetMapping
     @ResponseStatus(OK)
-    private fun getTodoList(principal: Principal): List<TodoResponse> {
-        return todoService.getTodos(userId = principal.getIdToLong()).map(::TodoResponse)
+    private fun getTodos(
+        principal: Principal,
+        todosSearchRequest: TodosSearchRequest,
+    ): TodosSearchResponse {
+        if (todosSearchRequest.isAllSearch) {
+            return todoService.getTodos(
+                userId = principal.getIdToLong(),
+                todosSearchRequest = todosSearchRequest,
+            ).let {
+                TodosSearchResponse(
+                    todosSearchRequest = todosSearchRequest,
+                    todos = it,
+                )
+            }
+        }
+
+        return todoService.getTodosPage(
+            userId = principal.getIdToLong(),
+            todosSearchRequest = todosSearchRequest,
+        ).let {
+            TodosSearchResponse(
+                todosSearchRequest = todosSearchRequest,
+                todos = it,
+            )
+        }
     }
 
     @GetMapping("{id}")

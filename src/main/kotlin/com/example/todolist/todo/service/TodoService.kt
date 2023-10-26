@@ -1,9 +1,11 @@
 package com.example.todolist.todo.service
 
+import com.example.todolist.todo.controller.api.data.TodosSearchRequest
 import com.example.todolist.todo.controller.api.data.UpdateTodoRequest
 import com.example.todolist.todo.persistent.entity.Todo
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
 import com.example.todolist.todo.persistent.repository.TodoRepository
+import org.springframework.data.domain.Page
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,9 +15,19 @@ class TodoService(
     private val todoRepository: TodoRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getTodos(userId: Long): List<Todo> {
-        return todoRepository.findAllByUserId(userId = userId)
-            .filter { it.isNotDeleted() }
+    fun getTodos(userId: Long, todosSearchRequest: TodosSearchRequest): List<Todo> {
+        return todoRepository.findAllByUserIdAndDeletedAtIsNull(
+            userId = userId,
+            sort = todosSearchRequest.getSort(),
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getTodosPage(userId: Long, todosSearchRequest: TodosSearchRequest): Page<Todo> {
+        return todoRepository.findAllByUserIdAndDeletedAtIsNull(
+            userId = userId,
+            pageable = todosSearchRequest.getPageable(),
+        )
     }
 
     @Transactional(readOnly = true)
