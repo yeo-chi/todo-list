@@ -23,6 +23,12 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
         .status(HttpStatusCode.valueOf(400))
         .body(e.message)
 
+    @ExceptionHandler(IllegalArgumentException::class)
+    @ResponseStatus(BAD_REQUEST)
+    fun illegalArgumentException(e: IllegalArgumentException) = ResponseEntity
+        .status(HttpStatusCode.valueOf(400))
+        .body(e.message)
+
     @ExceptionHandler(ConflictException::class)
     @ResponseStatus(CONFLICT)
     fun conflictException(e: ConflictException) = ResponseEntity

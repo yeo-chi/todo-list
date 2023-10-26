@@ -20,14 +20,14 @@ class UserEntity(
     val id: Long = 0,
 
     @Column(name = "user_id", unique = true)
-    val userId: String,
+    var userId: String,
 
     val password: String,
 
     val name: String,
 
     @Column(name = "nick_name", unique = true)
-    val nickName: String,
+    var nickName: String,
 
     @OneToMany(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -44,6 +44,8 @@ class UserEntity(
     }
 
     fun leave() {
+        userId = id.toString()
+        nickName = id.toString()
         deletedAt = now()
     }
 
@@ -53,6 +55,8 @@ class UserEntity(
         fun of(signUpUserRequest: SignUpUserRequest, passwordEncoder: PasswordEncoder): UserEntity {
             return with(signUpUserRequest) {
                 require(StringUtils.equals(password, rePassword)) { "비밀번호가 일치하지 않습니다." }
+                require(!StringUtils.isNumeric(userId)) { "아이디는 영문+숫자 조합이여야 합니다." }
+                require(!StringUtils.isNumeric(nickName)) { "닉네임은 영문+숫자 조합이여야 합니다." }
 
                 UserEntity(
                     userId = userId,

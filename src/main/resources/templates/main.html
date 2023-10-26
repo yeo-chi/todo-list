@@ -7,6 +7,7 @@
 <h1 id="welcome"></h1>
 <form>
     <button onclick="logOut()">로그아웃</button>
+    <button onclick="leave()">회원탈퇴</button>
 </form>
 <script>
     var getCookie = function(name) {
@@ -42,6 +43,19 @@
     function logOut() {
         document.cookie = "token" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         location.reload();
+    }
+
+    function leave() {
+        const token = getCookie("token")
+        if(token != "undefined" && token != null && token != "") {
+            fetch("http://localhost:8080/api/v1/users/me", {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+            })
+            .then((response) => logOut())
+        }
     }
 
 window.onload = checkLoginStatus();
