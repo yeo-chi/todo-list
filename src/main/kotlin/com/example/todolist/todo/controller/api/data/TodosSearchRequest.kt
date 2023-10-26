@@ -15,8 +15,8 @@ data class TodosSearchRequest(
     val isAllSearch = limit == -1
 
     @JsonIgnore
-    fun getSort() = Sort.by(order.direction, "startedAt")
+    fun getSort() = Sort.by(order.direction, "id")
 
     @JsonIgnore
-    fun getPageable() = PageRequest.of(offset, limit, order.direction, "startedAt")
+    fun getPageable() = PageRequest.of(offset, limit, order.direction, "id")
 }

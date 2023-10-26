@@ -9,9 +9,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.HttpClientErrorException.BadRequest
-import org.springframework.web.client.HttpClientErrorException.Conflict
-import java.lang.RuntimeException
 
 @Service
 class UserService(
@@ -21,12 +18,13 @@ class UserService(
 ) {
     @Transactional(readOnly = true)
     fun getUser(id: Long): UserEntity {
-        return userRepository.findByIdOrNull(id = id) ?: throw NoSuchElementException("회원을 찾을 수 없습니다.")
+        return userRepository.findByIdAndDeletedAtIsNull(id = id)
+            ?: throw NoSuchElementException("회원을 찾을 수 없습니다.")
     }
 
     @Transactional(readOnly = true)
     fun checkAlreadyUserId(userId: String) {
-        if (userRepository.findByUserId(userId = userId) != null) {
+        if (userRepository.findByUserIdAndDeletedAtIsNull(userId = userId) != null) {
             throw ConflictException("아이디가 중복되었습니다.")
         }
     }
@@ -50,14 +48,13 @@ class UserService(
 
     @Transactional(readOnly = true)
     fun signIn(signInUserRequest: SignInUserRequest): UserEntity {
-        return userRepository.findByUserId(userId = signInUserRequest.userId)
+        return userRepository.findByUserIdAndDeletedAtIsNull(userId = signInUserRequest.userId)
             ?.also { it.validPassword(password = signInUserRequest.password, passwordEncoder = passwordEncoder) }
             ?: throw NoSuchElementException("아이디를 찾을 수 없습니다.")
     }
 
     @Transactional
     fun leave(id: Long) {
-        getUser(id = id)
-            .apply { leave() }
+        getUser(id = id).apply { leave() }
     }
 }

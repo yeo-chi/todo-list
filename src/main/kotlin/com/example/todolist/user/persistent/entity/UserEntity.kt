@@ -39,6 +39,12 @@ class UserEntity(
 
     var deletedAt: LocalDateTime? = null,
 ) {
+    @Transient
+    val isLive = deletedAt == null
+
+    @Transient
+    val isLeave = deletedAt != null
+
     fun validPassword(password: String, passwordEncoder: PasswordEncoder) {
         check(passwordEncoder.matches(password, this.password)) { "비밀번호가 일치하지 않습니다" }
     }
@@ -48,8 +54,6 @@ class UserEntity(
         nickName = id.toString()
         deletedAt = now()
     }
-
-    fun isLeave() = deletedAt != null
 
     companion object {
         fun of(signUpUserRequest: SignUpUserRequest, passwordEncoder: PasswordEncoder): UserEntity {
