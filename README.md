@@ -30,3 +30,8 @@
 - 기능들의 주체인 user와 전반적인 시스템을 관리하는 BackOffice, 불특정한 외부와의 통신이 많은 서버의 경우는 헥사고날 아키텍처를 도입하여 구성 할 생각입니다.
 - Spring Batch 또는 Jenkins Batch를 사용하여 설정한 시간 전에 push 알림을 보낼 수 있도록 notification 서버를 구축하고 API통신이 아닌 MQ를 사용하여 통신 할 생각입니다.
 - 클라이언트와 서버간의 비밀번호와 같은 개인정보도 암호화하여 통신하도록 할 생각입니다.
+- yml에 설정 데이터들이 평문으로 적혀있어, vault를 사용하거나 kubernetes를 사용한다면 SecretKey에 넣어 관리 할 생각입니다.
+
+## 5. 기타
+- View 화면이 미완성입니다.🥲 yaml 설정 수정, todo라는 mysql schema 만 생성하면 swagger를 통해 모든 API를 확인 할 수 있습니다. (yml 보안을 위해 intellij 환경변수에 값을 넣어 사용하였습니다.)
+- Swagger에도 Spring security를 넣어 우선 회원가입과 로그인을 통해 토큰을 발급받고, 해당 토큰을 Authorize에 넣고 사용 할 수 있도록 하였습니다.
