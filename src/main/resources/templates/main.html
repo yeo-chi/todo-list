@@ -102,6 +102,10 @@
                     select.appendChild(option);
                 });
 
+                select.onchange = function() {
+                    fetchItem(item.id, this)
+                }
+
                 li.appendChild(select);
 
                 let button = document.createElement("button");
@@ -118,6 +122,28 @@
                 dynamicInput.appendChild(li);
             });
         })
+    }
+
+    function fetchItem(id, selected) {
+        const baseUrl = "http://localhost:8080/api/v1/users/me/todos/"+id
+        const params = {
+            todoStatus : selected.value
+        };
+        const queryString = new URLSearchParams(params).toString();
+
+        
+        const token = getCookie("token")
+        if(token != "undefined" && token != null && token != "") {
+            fetch(`${baseUrl}?${queryString}`, {
+                method: "FETCH",
+                headers: {
+                    "Authorization": "Bearer " + getCookie("token")
+                },
+            })
+            .then((response) => {
+                getTodoAll()
+            })
+        }
     }
 
     function deleteButton(id) {
