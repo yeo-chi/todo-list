@@ -5,13 +5,27 @@
 </head>
 <body>
 <h1 id="welcome"></h1>
-<form>
-    <button onclick="logOut()">로그아웃</button>
-    <button onclick="leave()">회원탈퇴</button>
-</form>
+<button type="button" onclick="getTodoAll()">전체조회</button>
+<button type="button" onclick="getTodoRecent()">최근1건조회</button>
+<ui id = "dynamicInput">
+    
+</ui>
+
+<hr>
+<label for="title">제목:</label>
+<input type="text" id="title" name="title"><br><br>
+<label for="memo">내용:</label>
+<input type="text" id="memo" name="memo"><br><br>
+<label for="startedAt">시작시간:</label>
+<input type="text" id="startedAt" name="startedAt"><br><br>
+<button type="button" onclick="post();">등록</button>
+
+<hr>    
+<button type="button" onclick="logOut()">로그아웃</button>
+<button type="button" onclick="leave()">회원탈퇴</button>
 <script>
-    var getCookie = function(name) {
-        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    let getCookie = function(name) {
+        let value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
         return value? value[2] : null;
     };
 
@@ -22,8 +36,8 @@
             window.location.href = "/signInPage";
             return false;
         } else {
-            getUser(token)
-            // getTodo(token)
+            getUser()
+            getTodoAll()
         }
     }
 
@@ -31,13 +45,167 @@
         fetch("http://localhost:8080/api/v1/users/me", {
             method: "GET",
             headers: {
-                "Authorization": "Bearer " + token
+                "Authorization": "Bearer " + getCookie("token")
             },
         })
         .then((response) => response.json())
         .then((data) => {
             document.getElementById("welcome").innerText = data.nickName + "님의 TodoList"
         })
+    }
+
+    function getTodoAll() {
+          // 부모 노드 선택
+        const parent = document.getElementById('dynamicInput');
+
+        // 자식 노드 삭제
+        parent.textContent = "";
+
+
+        const baseUrl = "http://localhost:8080/api/v1/users/me/todos"
+
+        const params = {
+            limit : -1,
+            offset : 0,
+            order : "ASC",
+        };
+
+        const queryString = new URLSearchParams(params).toString();
+
+        fetch(`${baseUrl}?${queryString}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + getCookie("token")
+            },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            // Status EnumType 정의
+            let statusEnum = ["CREATED", "PROCEEDING", "COMPLETED"];
+
+            // ul 요소 가져오기
+            let dynamicInput = document.getElementById("dynamicInput");
+
+            // 데이터 리스트를 반복하여 li 요소와 select 요소 추가
+            data.todos.forEach(function(item) {
+                let li = document.createElement("li");
+                li.textContent = "일정: " + item.title + " | 시작날짜: " + item.startedAt + " | 진행상황: ";
+
+                let select = document.createElement("select");
+                statusEnum.forEach(function(statusValue) {
+                    let option = document.createElement("option");
+                    option.value = statusValue;
+                    option.text = statusValue;
+                    if (statusValue === item.status) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+
+                li.appendChild(select);
+
+                let button = document.createElement("button");
+                button.innerHTML = "삭제"
+                button.id = item.id;
+
+                // 버튼을 클릭했을 때 실행될 함수
+                button.onclick = function() {
+                    deleteButton(item.id);
+                };
+
+                // 버튼을 화면에 추가
+                li.appendChild(button);
+                dynamicInput.appendChild(li);
+            });
+        })
+    }
+
+    function deleteButton(id) {
+        const token = getCookie("token")
+        if(token != "undefined" && token != null && token != "") {
+            fetch("http://localhost:8080/api/v1/users/me/todos/"+id, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + getCookie("token")
+                },
+            })
+            .then((response) => {
+                getTodoAll()
+            })
+        }
+    }
+
+    function getTodoRecent() {
+          // 부모 노드 선택
+          const parent = document.getElementById('dynamicInput');
+
+        // 자식 노드 삭제
+        parent.textContent = "";
+
+        const baseUrl = "http://localhost:8080/api/v1/users/me/todos"
+
+        const params = {
+            limit : 1,
+            offset : 0,
+            order : "DESC",
+        };
+
+        const queryString = new URLSearchParams(params).toString();
+
+        fetch(`${baseUrl}?${queryString}`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + getCookie("token")
+            },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            // Status EnumType 정의
+            let statusEnum = ["CREATED", "PROCEEDING", "COMPLETED"];
+
+            // ul 요소 가져오기
+            let dynamicInput = document.getElementById("dynamicInput");
+
+            // 데이터 리스트를 반복하여 li 요소와 select 요소 추가
+            data.todos.forEach(function(item) {
+                let li = document.createElement("li");
+                li.textContent = "일정: " + item.title + " | 시작날짜: " + item.startedAt + " | 진행상황: ";
+
+                let select = document.createElement("select");
+                statusEnum.forEach(function(statusValue) {
+                    let option = document.createElement("option");
+                    option.value = statusValue;
+                    option.text = statusValue;
+                    if (statusValue === item.status) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+
+                li.appendChild(select);
+                dynamicInput.appendChild(li);
+            });
+        })
+    }
+
+    function post() {
+        const title = document.getElementById("title").value
+        const memo = document.getElementById("memo").value
+        const startedAt = document.getElementById("startedAt").value
+
+        fetch("http://localhost:8080/api/v1/users/me/todos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + getCookie("token")
+            },
+            body: JSON.stringify({
+                title: title,
+                memo: memo,
+                startedAt: startedAt,
+            }),
+        })
+        .then((response) => getTodoAll())
     }
 
     function logOut() {
@@ -51,7 +219,7 @@
             fetch("http://localhost:8080/api/v1/users/me", {
                 method: "DELETE",
                 headers: {
-                    "Authorization": "Bearer " + token
+                    "Authorization": "Bearer " + getCookie("token")
                 },
             })
             .then((response) => {
