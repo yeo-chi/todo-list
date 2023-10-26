@@ -1,11 +1,12 @@
 package com.example.todolist.user.controller.api
 
 import com.example.todolist.configuration.jwt.TokenProvider
+import com.example.todolist.expansion.getIdToLong
 import com.example.todolist.user.controller.api.data.*
-import com.example.todolist.user.persistent.entity.User
 import com.example.todolist.user.service.UserService
 import org.springframework.http.HttpStatus.*
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -16,8 +17,8 @@ class UserApiController(
 ) {
     @GetMapping("me")
     @ResponseStatus(OK)
-    fun getMe(): UserResponse {
-        return userService.getUser(id = 1).let(::UserResponse)
+    fun getMe(principal: Principal): UserResponse {
+        return userService.getUser(id = principal.getIdToLong()).let(::UserResponse)
     }
 
     @PostMapping
@@ -40,7 +41,7 @@ class UserApiController(
 
     @DeleteMapping("me")
     @ResponseStatus(NO_CONTENT)
-    fun leave() {
-        userService.leave(id = 1)
+    fun leave(principal: Principal) {
+        userService.leave(id = principal.getIdToLong())
     }
 }

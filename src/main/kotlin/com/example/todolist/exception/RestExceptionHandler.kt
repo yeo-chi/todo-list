@@ -10,7 +10,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 class RestExceptionHandler : ResponseEntityExceptionHandler() {
-
     @ExceptionHandler(NoSuchElementException::class)
     @ResponseStatus(NOT_FOUND)
     fun noSuchElementException(e: NoSuchElementException) = ResponseEntity

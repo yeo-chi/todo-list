@@ -34,7 +34,7 @@ class JwtAuthenticationFilter(
         .takeIf { it?.startsWith("Bearer ", true) ?: false }?.substring(7)
 
     private fun parseUserSpecification(token: String?) = (
-            token?.takeIf { it.length >= 10 }
+            token?.takeIf { it.isNotEmpty() }
                 ?.let { tokenProvider.validateTokenAndGetSubject(it) }
                 ?: "anonymous"
             )
