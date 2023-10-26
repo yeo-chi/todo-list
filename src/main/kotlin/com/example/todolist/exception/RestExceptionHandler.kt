@@ -1,5 +1,6 @@
 package com.example.todolist.exception
 
+import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
@@ -14,5 +15,11 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
     @ResponseStatus(NOT_FOUND)
     fun noSuchElementException(e: NoSuchElementException) = ResponseEntity
         .status(HttpStatusCode.valueOf(404))
+        .body(e.message)
+
+    @ExceptionHandler(IllegalStateException::class)
+    @ResponseStatus(BAD_REQUEST)
+    fun illegalStateException(e: IllegalStateException) = ResponseEntity
+        .status(HttpStatusCode.valueOf(400))
         .body(e.message)
 }
