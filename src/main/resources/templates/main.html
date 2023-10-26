@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO List</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .todo-container {
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+        .header {
+            font-size: 18px;
+        }
+        .input-field {
+            margin: 10px 0;
+        }
+        .input-field input, .input-field select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            background-color: #444;
+            color: white;
+            border-radius: 5px;
+        }
+        .btn-container {
+            margin-top: 10px;
+        }
+        .btn-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .todo-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .todo-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #444;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .todo-item label {
+            flex: 1;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 14px;
+        }
+        .delete-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="todo-container">
+    <div class="header" th:text="${nickname} + ' 님의 TODO List'"></div>
+    <div class="input-field">
+        <input id="titleInput" type="text" placeholder="제목">
+    </div>
+    <div class="input-field">
+        <input id="timeInput" type="text" placeholder="시간">
+    </div>
+    <div class="input-field">
+        <select id="statusSelect">
+            <option value="미완료">미완료</option>
+            <option value="완료">완료</option>
+        </select>
+    </div>
+    <div class="btn-container">
+        <button id="addButton">새로운 TODO 추가</button>
+    </div>
+    <div class="todo-list" id="todoList"></div>
+</div>
+
+<script>
+        // TODO 리스트를 저장할 배열
+        let todos = [];
+
+        // TODO 추가 버튼 클릭 시
+        document.getElementById("addButton").addEventListener("click", function () {
+            const title = document.getElementById("titleInput").value;
+            const time = document.getElementById("timeInput").value;
+            const status = document.getElementById("statusSelect").value;
+            if (title && time) {
+                const todo = {
+                    title,
+                    time,
+                    status,
+                    createdTime: new Date().toLocaleString()
+                };
+                todos.push(todo);
+                updateTodoList();
+                // 입력 필드 비우기
+                document.getElementById("titleInput").value = "";
+                document.getElementById("timeInput").value = "";
+            }
+        });
+
+        // TODO 리스트 업데이트
+        function updateTodoList() {
+            const todoList = document.getElementById("todoList");
+            todoList.innerHTML = "";
+            todos.forEach((todo, index) => {
+                const todoItem = document.createElement("div");
+                todoItem.classList.add("todo-item");
+                todoItem.innerHTML = `
+                    <label>
+                        <strong>제목:</strong> ${todo.title} - <strong>시간:</strong> ${todo.time} - <strong>생성시간:</strong> ${todo.createdTime} - <strong>상태:</strong> ${todo.status}
+                    </label>
+                    <button class="delete-button" onclick="removeTodo(${index})">&#128465;</button>
+                `;
+                todoList.appendChild(todoItem);
+            });
+        }
+
+        // TODO 삭제
+        function removeTodo(index) {
+            todos.splice(index, 1);
+            updateTodoList();
+        }
+
+        // 초기 TODO 리스트 업데이트
+        updateTodoList();
+    </script>
+</body>
+</html>
