@@ -38,6 +38,9 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.2")
     testImplementation("org.springframework.security:spring-security-test")
 
+    //Thymeleaf
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
