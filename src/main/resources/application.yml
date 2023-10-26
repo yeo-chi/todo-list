@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/todo
+    username: root
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -13,6 +13,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY}
-  expiration-second: ${JWT_EXPIRATION_SECOND}
-  issuer: ${JWT_ISSUER}
+  secret-key: eyJhbGciOiJIUzUxMiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5ODExOTc3MiwiaWF0IjoxNjk4MTE5NzcyfQ.qx87H6VSGkHPv6Hu9_4_KFnjWziaNOdXDlj2eSoZBDrTipjv51HTdxSZ95e25FbpqIPyzW42GDS8P9YWsDR6Wg
+  expiration-second: 600
+  issuer: admin
