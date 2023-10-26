@@ -1,33 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>로그인</title>
+    <title>메인화면</title>
 </head>
 <body>
-<h1>로그인 페이지</h1>
+<h1 id="welcome"></h1>
 <form>
-    <label for="username">아이디:</label>
-    <input type="text" id="username" name="username"><br><br>
-    <label for="password">비밀번호:</label>
-    <input type="password" id="password" name="password"><br><br>
-    <button onclick="login()">로그인</button>
+    <button onclick="logOut()">로그아웃</button>
 </form>
 <script>
+    var getCookie = function(name) {
+        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return value? value[2] : null;
+    };
 
-function checkLoginStatus() {
-    const cookieName = "userLoggedIn";
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.startsWith(cookieName + '=')) {
-            // 쿠키에 값이 있으면 사용자가 로그인한 것으로 판단
-            return true;
+
+    function checkLoginStatus() {
+        const token = getCookie("token")
+        if(token == "undefined" || token == null || token == "") {
+            window.location.href = "/signInPage";
+            return false;
+        } else {
+            getUser(token)
+            // getTodo(token)
         }
     }
 
-    window.location.href = "/signInPage";
-    return false;
-}
+    function getUser(token) {
+        fetch("http://localhost:8080/api/v1/users/me", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            document.getElementById("welcome").innerText = data.nickName + "님의 TodoList"
+        })
+    }
+
+    function logOut() {
+        document.cookie = "token" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        location.reload();
+    }
 
 window.onload = checkLoginStatus();
 

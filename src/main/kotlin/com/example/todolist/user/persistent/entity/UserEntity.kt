@@ -19,12 +19,14 @@ class UserEntity(
     @GeneratedValue(strategy = IDENTITY)
     val id: Long = 0,
 
+    @Column(name = "user_id", unique = true)
     val userId: String,
 
     val password: String,
 
     val name: String,
 
+    @Column(name = "nick_name", unique = true)
     val nickName: String,
 
     @OneToMany(fetch = LAZY)

@@ -1,5 +1,6 @@
 package com.example.todolist.user.service
 
+import com.example.todolist.exception.ConflictException
 import com.example.todolist.user.controller.api.data.SignInUserRequest
 import com.example.todolist.user.controller.api.data.SignUpUserRequest
 import com.example.todolist.user.persistent.entity.UserEntity
@@ -8,6 +9,9 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.HttpClientErrorException.BadRequest
+import org.springframework.web.client.HttpClientErrorException.Conflict
+import java.lang.RuntimeException
 
 @Service
 class UserService(
@@ -18,6 +22,20 @@ class UserService(
     @Transactional(readOnly = true)
     fun getUser(id: Long): UserEntity {
         return userRepository.findByIdOrNull(id = id) ?: throw NoSuchElementException("회원을 찾을 수 없습니다.")
+    }
+
+    @Transactional(readOnly = true)
+    fun checkAlreadyUserId(userId: String) {
+        if (userRepository.findByUserId(userId = userId) != null) {
+            throw ConflictException("아이디가 중복되었습니다.")
+        }
+    }
+
+    @Transactional(readOnly = true)
+    fun checkAlreadyNickName(nickName: String) {
+        if (userRepository.findByNickName(nickName = nickName) != null) {
+            throw ConflictException("닉네임이 중복되었습니다.")
+        }
     }
 
     @Transactional

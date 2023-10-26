@@ -5,16 +5,51 @@
 </head>
 <body>
 <h1>회원가입 페이지</h1>
-<form>
-    <label for="username">아이디:</label>
-    <input type="text" id="username" name="username"><br><br>
-    <label for="password">비밀번호:</label>
-    <input type="password" id="password" name="password"><br><br>
-    <label for="password">비밀번호 확인:</label>
-    <input type="password" id="rePassword" name="rePassword"><br><br>
-    <label for="username">닉네임:</label>
-    <input type="text" id="nickName" name="nickName"><br><br>
-    <button onclick="signUp()">가입</button>
-</form>
+<label for="userId">아이디:</label>
+<input type="text" id="userId" name="userId"><br><br>
+<label for="password">비밀번호:</label>
+<input type="password" id="password" name="password"><br><br>
+<label for="rePassword">비밀번호 확인:</label>
+<input type="password" id="rePassword" name="rePassword"><br><br>
+<label for="name">이름:</label>
+<input type="text" id="name" name="name"><br><br>
+<label for="nickName">닉네임:</label>
+<input type="text" id="nickName" name="nickName"><br><br>
+<button onclick="signUp()">가입</button>
+
+    <script>
+        function signUp() {
+            const userId = document.getElementById("userId").value
+            const password = document.getElementById("password").value
+            const rePassword = document.getElementById("rePassword").value
+            const name = document.getElementById("name").value
+            const nickName = document.getElementById("nickName").value
+
+            console.log(userId, password, rePassword, nickName)
+
+            fetch("http://localhost:8080/api/v1/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    password: password,
+                    rePassword: rePassword,
+                    name: name,
+                    nickName: nickName,
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => setCookie("token", data.token, data.expirationMinute))
+            .then((data) => window.location.href = "/")
+        }
+
+        var setCookie = function(name, value, exp) {
+            var date = new Date();
+            date.setTime(date.getTime() + exp * 60 * 1000);
+            document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+        };
+    </script>
 </body>
 </html>

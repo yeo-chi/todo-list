@@ -15,10 +15,13 @@ class SignInUserResponse(
 
     val token: String
 
+    val expirationMinute: Long
+
     init {
         id = userEntity.id
         userId = userEntity.userId
         nickName = userEntity.nickName
         token = tokenProvider.createJwtToken(userSpecification = id.toString())
+        expirationMinute = tokenProvider.getExpirationMinute()
     }
 }

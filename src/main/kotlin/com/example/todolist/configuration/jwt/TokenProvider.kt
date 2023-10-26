@@ -42,4 +42,6 @@ class TokenProvider(
             .payload
             .subject
     }
+
+    fun getExpirationMinute() = jwtConfiguration.expirationSecond / 60
 }

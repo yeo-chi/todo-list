@@ -1,7 +1,7 @@
-package com.example.todolist.exception
+package com.example.todolist.exception.advice
 
-import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.http.HttpStatus.NOT_FOUND
+import com.example.todolist.exception.ConflictException
+import org.springframework.http.HttpStatus.*
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -21,5 +21,11 @@ class RestExceptionHandler : ResponseEntityExceptionHandler() {
     @ResponseStatus(BAD_REQUEST)
     fun illegalStateException(e: IllegalStateException) = ResponseEntity
         .status(HttpStatusCode.valueOf(400))
+        .body(e.message)
+
+    @ExceptionHandler(ConflictException::class)
+    @ResponseStatus(CONFLICT)
+    fun conflictException(e: ConflictException) = ResponseEntity
+        .status(HttpStatusCode.valueOf(409))
         .body(e.message)
 }

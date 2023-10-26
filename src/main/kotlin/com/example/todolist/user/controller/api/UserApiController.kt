@@ -24,6 +24,9 @@ class UserApiController(
     @PostMapping
     @ResponseStatus(CREATED)
     fun signUp(@RequestBody signUpUserRequest: SignUpUserRequest): SignUpUserResponse {
+        userService.checkAlreadyUserId(userId = signUpUserRequest.userId)
+        userService.checkAlreadyNickName(nickName = signUpUserRequest.nickName)
+
         return SignUpUserResponse(
             userEntity = userService.signUp(signUpUserRequest = signUpUserRequest),
             tokenProvider = tokenProvider,
