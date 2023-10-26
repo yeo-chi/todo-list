@@ -1,10 +1,10 @@
 package com.example.todolist.user.controller.api.data
 
 import com.example.todolist.configuration.jwt.TokenProvider
-import com.example.todolist.user.persistent.entity.User
+import com.example.todolist.user.persistent.entity.UserEntity
 
 class SignUpUserResponse(
-    user: User,
+    userEntity: UserEntity,
     tokenProvider: TokenProvider,
 ) {
     val id: Long
@@ -16,9 +16,9 @@ class SignUpUserResponse(
     val token: String
 
     init {
-        id = user.id
-        userId = user.userId
-        nickName = user.nickName
+        id = userEntity.id
+        userId = userEntity.userId
+        nickName = userEntity.nickName
         token = tokenProvider.createJwtToken(userSpecification = id.toString())
     }
 }

@@ -25,7 +25,7 @@ class UserApiController(
     @ResponseStatus(CREATED)
     fun signUp(@RequestBody signUpUserRequest: SignUpUserRequest): SignUpUserResponse {
         return SignUpUserResponse(
-            user = userService.signUp(signUpUserRequest = signUpUserRequest),
+            userEntity = userService.signUp(signUpUserRequest = signUpUserRequest),
             tokenProvider = tokenProvider,
         )
     }
@@ -34,7 +34,7 @@ class UserApiController(
     @ResponseStatus(OK)
     fun signIn(@RequestBody signInUserRequest: SignInUserRequest): SignInUserResponse {
         return SignInUserResponse(
-            user = userService.signIn(signInUserRequest = signInUserRequest),
+            userEntity = userService.signIn(signInUserRequest = signInUserRequest),
             tokenProvider = tokenProvider,
         )
     }

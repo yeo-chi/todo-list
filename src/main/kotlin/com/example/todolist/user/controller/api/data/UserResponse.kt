@@ -1,16 +1,16 @@
 package com.example.todolist.user.controller.api.data
 
-import com.example.todolist.user.persistent.entity.User
+import com.example.todolist.user.persistent.entity.UserEntity
 
 class UserResponse(
-    user: User
+    userEntity: UserEntity
 ) {
     val name: String
 
     val nickName: String
 
     init {
-        name = user.name
-        nickName = user.nickName
+        name = userEntity.name
+        nickName = userEntity.nickName
     }
 }

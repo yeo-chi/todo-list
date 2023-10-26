@@ -14,7 +14,7 @@ import java.time.LocalDateTime.now
 @DynamicUpdate
 @Entity
 @Table(name = "user")
-class User(
+class UserEntity(
     @Id
     @GeneratedValue(strategy = IDENTITY)
     val id: Long = 0,
@@ -48,11 +48,11 @@ class User(
     fun isLeave() = deletedAt != null
 
     companion object {
-        fun of(signUpUserRequest: SignUpUserRequest, passwordEncoder: PasswordEncoder): User {
+        fun of(signUpUserRequest: SignUpUserRequest, passwordEncoder: PasswordEncoder): UserEntity {
             return with(signUpUserRequest) {
                 require(StringUtils.equals(password, rePassword)) { "비밀번호가 일치하지 않습니다." }
 
-                User(
+                UserEntity(
                     userId = userId,
                     password = passwordEncoder.encode(password),
                     name = name,

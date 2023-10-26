@@ -2,7 +2,7 @@ package com.example.todolist.user.service
 
 import com.example.todolist.user.controller.api.data.SignInUserRequest
 import com.example.todolist.user.controller.api.data.SignUpUserRequest
-import com.example.todolist.user.persistent.entity.User
+import com.example.todolist.user.persistent.entity.UserEntity
 import com.example.todolist.user.persistent.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -16,14 +16,14 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
 ) {
     @Transactional(readOnly = true)
-    fun getUser(id: Long): User {
+    fun getUser(id: Long): UserEntity {
         return userRepository.findByIdOrNull(id = id) ?: throw NoSuchElementException("회원을 찾을 수 없습니다.")
     }
 
     @Transactional
-    fun signUp(signUpUserRequest: SignUpUserRequest): User {
+    fun signUp(signUpUserRequest: SignUpUserRequest): UserEntity {
         return userRepository.save(
-            User.of(
+            UserEntity.of(
                 signUpUserRequest = signUpUserRequest,
                 passwordEncoder = passwordEncoder,
             ),
@@ -31,7 +31,7 @@ class UserService(
     }
 
     @Transactional(readOnly = true)
-    fun signIn(signInUserRequest: SignInUserRequest): User {
+    fun signIn(signInUserRequest: SignInUserRequest): UserEntity {
         return userRepository.findByUserId(userId = signInUserRequest.userId)
             ?.also { it.validPassword(password = signInUserRequest.password, passwordEncoder = passwordEncoder) }
             ?: throw NoSuchElementException("아이디를 찾을 수 없습니다.")
