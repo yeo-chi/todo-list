@@ -36,6 +36,12 @@ class TodoEntity(
 
     var deletedAt: LocalDateTime? = null,
 ) {
+    @Transient
+    val isDeleted = deletedAt != null
+
+    @Transient
+    val isNotDeleted = deletedAt == null
+
     fun update(updateTodoRequest: UpdateTodoRequest) {
         title = updateTodoRequest.title
         memo = updateTodoRequest.memo
@@ -52,11 +58,7 @@ class TodoEntity(
         deletedAt = now()
     }
 
-    fun isDeleted() = deletedAt != null
-
-    fun isNotDeleted() = deletedAt == null
-
     fun userCheck(userId: Long) {
-        require(this.id == userId) { "등록된 아이디와 다른 사용자가 접근했습니다." }
+        require(this.userId == userId) { "등록된 아이디와 다른 사용자가 접근했습니다." }
     }
 }
