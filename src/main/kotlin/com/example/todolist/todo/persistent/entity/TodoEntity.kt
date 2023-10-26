@@ -1,10 +1,10 @@
 package com.example.todolist.todo.persistent.entity
 
-import com.example.todolist.todo.controller.api.data.CreateTodoRequest
 import com.example.todolist.todo.controller.api.data.UpdateTodoRequest
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
 import com.example.todolist.todo.persistent.entity.data.TodoStatus.CREATED
 import jakarta.persistence.*
+import jakarta.persistence.EnumType.STRING
 import jakarta.persistence.GenerationType.IDENTITY
 import org.hibernate.annotations.DynamicUpdate
 import java.time.LocalDateTime
@@ -13,7 +13,7 @@ import java.time.LocalDateTime.now
 @DynamicUpdate
 @Entity
 @Table(name = "todo")
-class Todo(
+class TodoEntity(
     @Id
     @GeneratedValue(strategy = IDENTITY)
     val id: Long = 0,
@@ -27,6 +27,7 @@ class Todo(
 
     var startedAt: LocalDateTime,
 
+    @Enumerated(STRING)
     var status: TodoStatus = CREATED,
 
     val createdAt: LocalDateTime = now(),
@@ -57,16 +58,5 @@ class Todo(
 
     fun userCheck(userId: Long) {
         require(this.id == userId) { "등록된 아이디와 다른 사용자가 접근했습니다." }
-    }
-
-    companion object {
-        fun of(userId: Long, createTodoRequest: CreateTodoRequest): Todo {
-            return Todo(
-                userId = userId,
-                title = createTodoRequest.title,
-                memo = createTodoRequest.memo,
-                startedAt = createTodoRequest.startedAt,
-            )
-        }
     }
 }

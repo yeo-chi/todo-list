@@ -1,6 +1,6 @@
 package com.example.todolist.user.persistent.entity
 
-import com.example.todolist.todo.persistent.entity.Todo
+import com.example.todolist.todo.persistent.entity.TodoEntity
 import com.example.todolist.user.controller.api.data.SignUpUserRequest
 import jakarta.persistence.*
 import jakarta.persistence.FetchType.LAZY
@@ -29,7 +29,7 @@ class User(
 
     @OneToMany(fetch = LAZY)
     @JoinColumn(name = "user_id")
-    val todos: List<Todo> = listOf(),
+    val todoEntities: List<TodoEntity> = listOf(),
 
     val createdAt: LocalDateTime = now(),
 

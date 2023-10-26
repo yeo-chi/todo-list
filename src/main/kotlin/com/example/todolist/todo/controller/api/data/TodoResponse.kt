@@ -1,6 +1,6 @@
 package com.example.todolist.todo.controller.api.data
 
-import com.example.todolist.todo.persistent.entity.Todo
+import com.example.todolist.todo.persistent.entity.TodoEntity
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
 import java.time.LocalDateTime
 
@@ -19,13 +19,13 @@ data class TodoResponse(
 
     val updatedAt: LocalDateTime?,
 ) {
-    constructor(todo: Todo) : this(
-        id = todo.id,
-        title = todo.title,
-        memo = todo.memo,
-        startedAt = todo.startedAt,
-        status = todo.status,
-        createdAt = todo.createdAt,
-        updatedAt = todo.updatedAt,
+    constructor(todoEntity: TodoEntity) : this(
+        id = todoEntity.id,
+        title = todoEntity.title,
+        memo = todoEntity.memo,
+        startedAt = todoEntity.startedAt,
+        status = todoEntity.status,
+        createdAt = todoEntity.createdAt,
+        updatedAt = todoEntity.updatedAt,
     )
 }

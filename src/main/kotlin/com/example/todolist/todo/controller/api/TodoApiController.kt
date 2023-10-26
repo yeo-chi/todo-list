@@ -2,7 +2,6 @@ package com.example.todolist.todo.controller.api
 
 import com.example.todolist.expansion.getIdToLong
 import com.example.todolist.todo.controller.api.data.*
-import com.example.todolist.todo.persistent.entity.Todo
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
 import com.example.todolist.todo.service.TodoService
 import org.springframework.http.HttpStatus.*
@@ -27,7 +26,7 @@ class TodoApiController(
             ).let {
                 TodosSearchResponse(
                     todosSearchRequest = todosSearchRequest,
-                    todos = it,
+                    todoEntities = it,
                 )
             }
         }
@@ -61,12 +60,9 @@ class TodoApiController(
         principal: Principal,
         @RequestBody createTodoRequest: CreateTodoRequest
     ): TodoResponse {
-        return todoService.createTodo(
-            todo = Todo.of(
-                userId = principal.getIdToLong(),
-                createTodoRequest = createTodoRequest,
-            ),
-        ).let(::TodoResponse)
+        val userId = principal.getIdToLong()
+
+        return todoService.createTodo(todoEntity = createTodoRequest.toEntity(userId = userId)).let(::TodoResponse)
     }
 
     @PutMapping("{id}")

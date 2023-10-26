@@ -1,6 +1,6 @@
 package com.example.todolist.todo.controller.api.data
 
-import com.example.todolist.todo.persistent.entity.Todo
+import com.example.todolist.todo.persistent.entity.TodoEntity
 import org.springframework.data.domain.Page
 
 data class TodosSearchResponse(
@@ -14,15 +14,15 @@ data class TodosSearchResponse(
 
     val order: Order,
 ) {
-    constructor(todosSearchRequest: TodosSearchRequest, todos: List<Todo>): this (
+    constructor(todosSearchRequest: TodosSearchRequest, todoEntities: List<TodoEntity>): this (
         limit = todosSearchRequest.limit,
         offset = todosSearchRequest.offset,
-        total = todos.size,
-        todos = todos.map(::TodoResponse),
+        total = todoEntities.size,
+        todos = todoEntities.map(::TodoResponse),
         order = todosSearchRequest.order,
     )
 
-    constructor(todosSearchRequest: TodosSearchRequest, todos: Page<Todo>): this (
+    constructor(todosSearchRequest: TodosSearchRequest, todos: Page<TodoEntity>): this (
         limit = todosSearchRequest.limit,
         offset = todosSearchRequest.offset,
         total = todos.totalElements.toInt(),

@@ -2,7 +2,7 @@ package com.example.todolist.todo.service
 
 import com.example.todolist.todo.controller.api.data.TodosSearchRequest
 import com.example.todolist.todo.controller.api.data.UpdateTodoRequest
-import com.example.todolist.todo.persistent.entity.Todo
+import com.example.todolist.todo.persistent.entity.TodoEntity
 import com.example.todolist.todo.persistent.entity.data.TodoStatus
 import com.example.todolist.todo.persistent.repository.TodoRepository
 import org.springframework.data.domain.Page
@@ -15,7 +15,7 @@ class TodoService(
     private val todoRepository: TodoRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getTodos(userId: Long, todosSearchRequest: TodosSearchRequest): List<Todo> {
+    fun getTodos(userId: Long, todosSearchRequest: TodosSearchRequest): List<TodoEntity> {
         return todoRepository.findAllByUserIdAndDeletedAtIsNull(
             userId = userId,
             sort = todosSearchRequest.getSort(),
@@ -23,7 +23,7 @@ class TodoService(
     }
 
     @Transactional(readOnly = true)
-    fun getTodosPage(userId: Long, todosSearchRequest: TodosSearchRequest): Page<Todo> {
+    fun getTodosPage(userId: Long, todosSearchRequest: TodosSearchRequest): Page<TodoEntity> {
         return todoRepository.findAllByUserIdAndDeletedAtIsNull(
             userId = userId,
             pageable = todosSearchRequest.getPageable(),
@@ -31,15 +31,15 @@ class TodoService(
     }
 
     @Transactional(readOnly = true)
-    fun getTodo(id: Long, userId: Long): Todo {
+    fun getTodo(id: Long, userId: Long): TodoEntity {
         return todoRepository.findByIdOrNull(id = id)
             ?.also { it.userCheck(userId = userId) }
             ?: throw NoSuchElementException("할 일을 찾을 수 없습니다.")
     }
 
     @Transactional
-    fun createTodo(todo: Todo): Todo {
-        return todoRepository.save(todo)
+    fun createTodo(todoEntity: TodoEntity): TodoEntity {
+        return todoRepository.save(todoEntity)
     }
 
     @Transactional
