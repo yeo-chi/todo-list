@@ -58,7 +58,7 @@ class TodoApiController(
     @ResponseStatus(CREATED)
     private fun createTodo(
         principal: Principal,
-        @RequestBody createTodoRequest: CreateTodoRequest
+        @RequestBody createTodoRequest: CreateTodoRequest,
     ): TodoResponse {
         val userId = principal.getIdToLong()
 

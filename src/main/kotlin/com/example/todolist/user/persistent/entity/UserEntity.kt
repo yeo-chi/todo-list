@@ -46,7 +46,7 @@ class UserEntity(
     val isLeave = deletedAt != null
 
     fun validPassword(password: String, passwordEncoder: PasswordEncoder) {
-        check(passwordEncoder.matches(password, this.password)) { "비밀번호가 일치하지 않습니다" }
+        require(passwordEncoder.matches(password, this.password)) { "비밀번호가 일치하지 않습니다" }
     }
 
     fun leave() {
